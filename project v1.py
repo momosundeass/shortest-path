@@ -16,7 +16,9 @@ a, b = list(), []
 i = 0
 w_dot, w_name, w_pos = list(), [], []
 a2, b2, c2, d2 = list(), [], [], []
+node1, node2, distance = list(), [], []
 i2 = 0
+
 ######################### Third Frame
 def changeposmodule(event):
     if len(w_dot) != 0:
@@ -68,7 +70,7 @@ def add_line():
     a2.append(Entry(f2top,width=5))
     b2.append(Entry(f2top,width=5))
     c2.append(Entry(f2top,width=7))
-    d2.append(Button(f2top, text='create line'))
+    d2.append(Button(f2top, text='create line', command=line_c))
     a2[i2].grid(row=i2+2, column=2, sticky=W)
     b2[i2].grid(row=i2+2, column=2, sticky=W, padx=50)
     c2[i2].grid(row=i2+2, column=2, sticky=W, padx=90)
@@ -86,6 +88,9 @@ def del_line():
         d2[i2-1].destroy()
         d2.pop()
         i2 -= 1
+def line_c():
+    for i in a2:
+        print i.get()
 f2top = Frame(master).grid(row=0 ,column=2)
 Button(f2top, text="add_line", command=add_line).grid(row=0, column=2, sticky=W)
 Button(f2top, text="del_line", command=del_line).grid(row=0, column=2, sticky=W, padx=60)
