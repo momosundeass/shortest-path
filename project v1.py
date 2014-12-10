@@ -12,11 +12,9 @@ class Line:
         self.dis = distance
     
 ######################### Variable area
-a = list()
-b = list()
-w_dot, w_name = list(), []
-w_pos = list()
+a, b = list(), []
 i = 0
+w_dot, w_name, w_pos = list(), [], []
 a2, b2, c2, d2 = list(), [], [], []
 i2 = 0
 ######################### Third Frame
@@ -36,8 +34,6 @@ w.grid(row=2, rowspan=1000, column=3)
 w.bind("<Button-1>", changeposmodule)
 
 ######################### First Frame
-
-
 def add_button():
     global i
     a.append(Label(ftop, text='Node'+'%02d' % int(1+i)))
@@ -75,8 +71,8 @@ def add_line():
     d2.append(Button(f2top, text='create line'))
     a2[i2].grid(row=i2+2, column=2, sticky=W)
     b2[i2].grid(row=i2+2, column=2, sticky=W, padx=50)
-    c2[i2].grid(row=i2+2, column=2, sticky=W, padx=150)
-    d2[i2].grid(row=i2+2, column=2, sticky=W, padx=200)
+    c2[i2].grid(row=i2+2, column=2, sticky=W, padx=90)
+    d2[i2].grid(row=i2+2, column=2, sticky=W, padx=140)
     i2 += 1
 def del_line():
     global i2
@@ -94,7 +90,7 @@ f2top = Frame(master).grid(row=0 ,column=2)
 Button(f2top, text="add_line", command=add_line).grid(row=0, column=2, sticky=W)
 Button(f2top, text="del_line", command=del_line).grid(row=0, column=2, sticky=W, padx=60)
 Label(f2top, text='Node To').grid(row=1, column=2, sticky=W)
-Label(f2top, text='Node(Number)').grid(row=1, column=2, sticky=W, padx=50)
-Label(f2top, text='Distance(Number)').grid(row=1, column=2, sticky=W, padx=150)
+Label(f2top, text='Node').grid(row=1, column=2, sticky=W, padx=50)
+Label(f2top, text='Distance(Number)').grid(row=1, column=2, sticky=W, padx=90)
 
 master.mainloop()
