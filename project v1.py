@@ -5,49 +5,24 @@ class Position:
     def __init__(self, posx, posy):
         self.x = posx
         self.y = posy
+
+######################### Function area
+def line_destroy():
+    global line
+    if len(line) > 0:
+        for d in line:
+            w.delete(d)
+        line = []
+        line_info = []
 ######################### Variable area
 a, b = list(), []
 i = 0
 w_dot, w_name, w_pos = list(), [], []
 a2, b2 = list(), []
-node1, node2 = list(), []
-line, graph = list(), []
-graph_dic = dict()
+node1, node2, distance = list(), [], []
+line, line_info = list(), []
 i2 = 0
-######################### Function area
-def line_destroy():
-    global line
-    global graph
-    global graph_dic
-    if len(line) > 0:
-        for d in line:
-            w.delete(d)
-        line = []
-        graph = []
-        graph_dic = dict()
-def find_shortest_path(graph, start, end, path=[]):
-    path = path + [start]
-    if start == end:
-        return path
-    if not graph.has_key(start):
-        return None
-    shortest = None
-    for node in graph[start]:
-        if node not in path:
-            newpath = find_shortest_path(graph, node, end, path)
-            if newpath:
-                if not shortest or len(newpath) < len(shortest):
-                    shortest = newpath
-    return shortest
-def convert_list_dict(lis):
-    dic = dict()
-    for c in lis:
-        if c[0] not in dic:
-            dic[c[0]] = [c[1]]
-        else:
-            dic[c[0]] += [c[1]]
-    return dic
-            
+
 ######################### Third Frame
 def changeposmodule(event):
     if len(w_dot) != 0:
@@ -55,20 +30,12 @@ def changeposmodule(event):
         w.move(w_name[i-1], event.x-w_pos[i-1].x, event.y-w_pos[i-1].y)
         w_pos[i-1] = Position(event.x, event.y)
         line_destroy()
-def calcu():
-    global graph_dic
-    print graph_dic
-    print p1.get()
-    print p2.get()
-    temp = find_shortest_path(graph_dic, p1.get(), p2.get(), path=[])
-    Label(master, text=str(temp)).grid(column=3,row=3)
+        
 Label(master, text='From(Number)').grid(row=0, column=3, sticky=W)
-p1 = Entry(master, width=2)
-p1.grid(row=0, column=3, sticky=W, padx=100)
+Entry(master, width=2).grid(row=0, column=3, sticky=W, padx=100)
 Label(master, text='To(Number)').grid(row=0, column=3, sticky=W, padx=120)
-p2 = Entry(master, width=2)
-p2.grid(row=0, column=3, sticky=W, padx=200)
-Button(master, text='Calculate', command=calcu).grid(row=0, column=3, sticky=E)
+Entry(master, width=2).grid(row=0, column=3, sticky=W, padx=200)
+Button(master, text='Calculate').grid(row=0, column=3, sticky=E)
 w = Canvas(master, width=600, height=600, bg='PINK')
 w.grid(row=2, rowspan=1000, column=3)
 w.bind("<Button-1>", changeposmodule)
@@ -115,7 +82,7 @@ def add_line():
     i2 += 1
 def del_line():
     global i2
-    if len(a2) != 0 and len(b2) != 0:
+    if len(a2) != 0 and len(b2) != 0 and len(c2) != 0:
         line_destroy()
         a2[i2-1].destroy()
         a2.pop()
@@ -123,15 +90,9 @@ def del_line():
         b2.pop()
         i2 -= 1
 def line_c():
-    global graph
-    global graph_dic
     if len(a) >= 2:
         for j in range(len(a2)):
             line.append(w.create_line(w_pos[int(a2[j].get())-1].x, w_pos[int(a2[j].get())-1].y, w_pos[int(b2[j].get())-1].x, w_pos[int(b2[j].get())-1].y))
-            graph.append([a2[j].get(), b2[j].get()])
-            graph.append([b2[j].get(), a2[j].get()])
-        graph_dic = convert_list_dict(graph)
-    print graph_dic
 f2top = Frame(master).grid(row=0 ,column=2)
 Button(f2top, text="add_line", command=add_line).grid(row=0, column=2, sticky=W)
 Button(f2top, text="del_line", command=del_line).grid(row=0, column=2, sticky=W, padx=60)
