@@ -25,6 +25,18 @@ def line_destroy():
         line = []
         graph = []
         graph_dic = dict()
+def z(flash ,ino=0, string='', num=0):
+    if ino == 0:
+        flash = int(flash)
+        if flash / 26 != 0 and flash != 26:
+            string += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(flash / 26) - 1]
+        string += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(flash % 26) - 1]
+        return string
+    else:
+        if len(flash) == 2:
+            num += ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.index(flash[0])+1) * 26
+        num += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.index(flash[-1])+1
+        return str(num)
 def find_shortest_path(graph, start, end, path=[]):
     path = path + [start]
     if start == end:
@@ -76,13 +88,15 @@ w.bind("<Button-1>", changeposmodule)
 ######################### First Frame
 def add_button():
     global i
-    a.append(Label(ftop, text='Node'+'%02d' % int(1+i)))
+##    a.append(Label(ftop, text='Node'+'%02d' % int(1+i)))
+    a.append(Label(ftop, text=z(i+1)))
     b.append(Entry(ftop))
     w_pos.append(Position(300, 300))
     w_dot.append(w.create_rectangle(w_pos[i].x-2, w_pos[i].y-2, w_pos[i].x+2, w_pos[i].y+2, fill='BLACK'))
-    w_name.append(w.create_text(300, 290, text=str(i+1)))
+    w_name.append(w.create_text(300, 290, text=z(i+1) ))
+##    w_name.append(w.create_text(300, 290, text=str(i+1)))
     a[i].grid(row=i+1, column=0, sticky=W)
-    b[i].grid(row=i+1, padx=30, sticky=E)
+    b[i].grid(row=i+1, padx=30, sticky=W)
     line_destroy()
     i += 1
 def del_button():
@@ -127,7 +141,8 @@ def line_c():
     global graph_dic
     if len(a) >= 2:
         for j in range(len(a2)):
-            line.append(w.create_line(w_pos[int(a2[j].get())-1].x, w_pos[int(a2[j].get())-1].y, w_pos[int(b2[j].get())-1].x, w_pos[int(b2[j].get())-1].y))
+            line.append(w.create_line(w_pos[int(z(a2[j].get(), ino=1))-1].x, w_pos[int(z(a2[j].get(), ino=1))-1].y,\
+                                      w_pos[int(z(b2[j].get(), ino=1))-1].x, w_pos[int(z(b2[j].get(), ino=1))-1].y))
             graph.append([a2[j].get(), b2[j].get()])
             graph.append([b2[j].get(), a2[j].get()])
         graph_dic = convert_list_dict(graph)
