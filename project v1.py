@@ -3,11 +3,14 @@ from random import *
 master = Tk()
 master.title('Shortest Path')
 ######################### Class Area
+
 class Position:
     def __init__(self, posx, posy):
         self.x = posx
         self.y = posy
+        
 ######################### Variable area
+        
 a, b = list(), []
 i = 0
 w_dot, w_name, w_pos = list(), [], []
@@ -16,7 +19,9 @@ node1, node2 = list(), []
 line, graph = list(), []
 graph_dic = dict()
 i2 = 0
+
 ######################### Function area
+
 def line_destroy():
     global line
     global graph
@@ -27,11 +32,15 @@ def line_destroy():
         line = []
         graph = []
         graph_dic = dict()
+        
 def z(flash ,ino=0, string='', num=0):
     if ino == 0:
         flash = int(flash)
         if flash / 26 != 0 and flash != 26:
-            string += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(flash / 26) - 1]
+            if flash % 26 == 0:
+                string += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(flash / 26) - 2]
+            else:
+                string += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(flash / 26) - 1]
         string += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(flash % 26) - 1]
         return string
     else:
@@ -39,6 +48,7 @@ def z(flash ,ino=0, string='', num=0):
             num += ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.index(flash[0])+1) * 26
         num += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.index(flash[-1])+1
         return str(num)
+    
 def find_shortest_path(graph, start, end, path=[]):
     path = path + [start]
     if start == end:
@@ -53,6 +63,7 @@ def find_shortest_path(graph, start, end, path=[]):
                 if not shortest or len(newpath) < len(shortest):
                     shortest = newpath
     return shortest
+
 def convert_list_dict(lis):
     dic = dict()
     for c in lis:
@@ -62,6 +73,24 @@ def convert_list_dict(lis):
             dic[c[0]] += [c[1]]
     return dic
 
+def answer(ans):
+    global w_pos
+    root = Tk()
+    root.title('Answer')
+    we = Canvas(root, width=500, height=500, bg='#99FFFF')
+    path = 'Path ::: ' + str(ans[0])
+    for o in range(len(ans)-1):
+        path = path + ' > ' + str(ans[o+1])
+    Label(root, text=path).pack()
+    we.pack()
+    for o in range(len(w_pos)):
+        we.create_rectangle(w_pos[o].x-2, w_pos[o].y-2, w_pos[o].x+2, w_pos[o].y+2, fill='BLACK')
+        we.create_text(w_pos[o].x, w_pos[o].y - 10, text=z(o+1))
+    for o in range(len(ans)-1):
+        we.create_line(w_pos[int(z(ans[o], ino=1))-1].x, w_pos[int(z(ans[o], ino=1))-1].y,\
+                        w_pos[int(z(ans[o+1], ino=1))-1].x, w_pos[int(z(ans[o+1], ino=1))-1].y)
+    root.mainloop()
+    
 ######################### Third Frame
 def changeposmodule(event):
     if len(w_dot) != 0:
@@ -72,6 +101,7 @@ def changeposmodule(event):
 def calcu():
     global graph_dic
     temp = find_shortest_path(graph_dic, p1.get(), p2.get(), path=[])
+    answer(temp)
 Label(master, text='Find Shortest Path From').grid(row=0, column=3, sticky=W)
 p1 = Entry(master, width=2)
 p1.grid(row=0, column=3, sticky=W, padx=135)
@@ -79,13 +109,16 @@ Label(master, text='To').grid(row=0, column=3, sticky=W, padx=155)
 p2 = Entry(master, width=2)
 p2.grid(row=0, column=3, sticky=W, padx=175)
 Button(master, text='Calculate', command=calcu).grid(row=0, column=3, sticky=E)
-w = Canvas(master, width=500, height=500, bg='PINK')
-w.grid(row=2, rowspan=1000, column=3)
+w = Canvas(master, width=500, height=500, bg='#99FFFF')
+w.grid(row=1, rowspan=1000, column=3)
 w.bind("<Button-1>", changeposmodule)
 
 ######################### First Frame
 def add_button():
     global i
+    if len(a) != 0:
+        a[i-1].config(fg='BLACK')
+    i = len(a)
     a.append(Label(ftop, text=z(i+1)))
     b.append(Entry(ftop))
     pos = Position(randrange(50, 450), randrange(50, 450))
@@ -94,11 +127,20 @@ def add_button():
     w_name.append(w.create_text(pos.x, pos.y - 10, text=z(i+1) ))
     a[i].grid(row=i+2, column=0, sticky=W)
     b[i].grid(row=i+2, padx=30, sticky=W)
+    botup.grid_remove()
+    botdown.grid_remove()
+    botup.grid(row=i+2, column=0, sticky=E, padx=20)
+    botdown.grid(row=i+2, column=0, sticky=E, padx=40)
+    a[i].config(fg='RED')
+    if len(a) > 1:
+        a[i-1].config(fg='BLACK')
     line_destroy()
     i += 1
 def del_button():
     global i
     if len(a) != 0 and len(b) != 0:
+        a[i-1].config(fg='BLACK')
+        i = len(a)
         a[i-1].destroy()
         a.pop()
         b[i-1].destroy()
@@ -108,13 +150,35 @@ def del_button():
         w.delete(w_name[i-1])
         w_name.pop()
         w_pos.pop()
+        botup.grid_remove()
+        botdown.grid_remove()
+        botup.grid(row=i, column=0, sticky=E, padx=20)
+        botdown.grid(row=i, column=0, sticky=E, padx=40)
+        if len(a) == 0:
+            botup.grid_remove()
+            botdown.grid_remove()
         line_destroy()
         i -= 1
+        if len(a) > 0:
+            a[i-1].config(fg='RED')
+def i_change_up():
+    global i
+    if i > 1 and i <= len(a):  
+        i -= 1
+        a[i].config(fg='BLACK')
+        a[i-1].config(fg='RED')
+def i_change_down():
+    global i
+    if i > -1 and i < len(a):
+        a[i-1].config(fg='BLACK')
+        i += 1
+        a[i-1].config(fg='RED')
 ftop = Frame(master).grid(row=0)
 Label(ftop, text='Comment').grid(row=1)
 Button(ftop, text="Add Node", command=add_button).grid(row=0, sticky=W)
 Button(ftop, text="Delete Node", command=del_button).grid(row=0, sticky=W, padx=70)
-
+botup = Button(ftop, text='^', command=i_change_up)
+botdown = Button(ftop, text='v', command=i_change_down)
 
 ######################### Second Frame
 def add_line():
@@ -126,7 +190,7 @@ def add_line():
     b2[i2].grid(row=i2+2, column=2, sticky=W, padx=50)
     line_destroy()
     d.grid_remove()
-    d.grid(row=i2+3, column=2, sticky=E)
+    d.grid(row=i2+2, column=2, sticky=E)
     i2 += 1
 def del_line():
     global i2
@@ -137,7 +201,7 @@ def del_line():
         b2[i2-1].destroy()
         b2.pop()
         d.grid_remove()
-        d.grid(row=i2+3, column=2, sticky=E)
+        d.grid(row=i2, column=2, sticky=E)
         if len(a2) == 0:
             d.grid_remove()
         i2 -= 1
@@ -151,7 +215,6 @@ def line_c():
             graph.append([a2[j].get(), b2[j].get()])
             graph.append([b2[j].get(), a2[j].get()])
         graph_dic = convert_list_dict(graph)
-    print graph_dic
 f2top = Frame(master).grid(row=0 ,column=2)
 Button(f2top, text="add_line", command=add_line).grid(row=0, column=2, sticky=W)
 Button(f2top, text="del_line", command=del_line).grid(row=0, column=2, sticky=W, padx=60)
