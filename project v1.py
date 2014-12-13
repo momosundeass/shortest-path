@@ -90,12 +90,14 @@ def answer(ans):
         we.create_line(w_pos[int(z(ans[o], ino=1))-1].x, w_pos[int(z(ans[o], ino=1))-1].y,\
                         w_pos[int(z(ans[o+1], ino=1))-1].x, w_pos[int(z(ans[o+1], ino=1))-1].y)
     root.mainloop()
+    
 def updownchange():
     botup.grid(row=i+1, column=0, sticky=E, padx=20)
     botdown.grid(row=i+1, column=0, sticky=E, padx=40)
     if len(a) == 0:
         botup.grid_remove()
         botdown.grid_remove()
+        
 ######################### Third Frame
 def changeposmodule(event):
     if len(w_dot) != 0:
@@ -103,11 +105,13 @@ def changeposmodule(event):
         w.move(w_name[i-1], event.x-w_pos[i-1].x, event.y-w_pos[i-1].y)
         w_pos[i-1] = Position(event.x, event.y)
         line_destroy()
+        
 def calcu():
     global graph_dic
     temp = find_shortest_path(graph_dic, p1.get(), p2.get(), path=[])
     if temp != None:
         answer(temp)
+    
 Label(master, text='Find Shortest Path From').grid(row=0, column=3, sticky=W)
 p1 = Entry(master, width=2)
 p1.grid(row=0, column=3, sticky=W, padx=135)
@@ -142,6 +146,7 @@ def add_button():
         a[i-1].config(fg='BLACK')
     line_destroy()
     i += 1
+    
 def del_button():
     global i
     if len(a) != 0 and len(b) != 0:
@@ -167,6 +172,7 @@ def del_button():
         i -= 1
         if len(a) > 0:
             a[i-1].config(fg='RED')
+            
 def i_change_up():
     global i
     if i > 1 and i <= len(a):  
@@ -174,6 +180,7 @@ def i_change_up():
         a[i].config(fg='BLACK')
         a[i-1].config(fg='RED')
         updownchange()
+        
 def i_change_down():
     global i
     if i > -1 and i < len(a):
@@ -200,6 +207,7 @@ def add_line():
     d.grid_remove()
     d.grid(row=i2+2, column=2, sticky=E)
     i2 += 1
+    
 def del_line():
     global i2
     if len(a2) != 0 and len(b2) != 0:
@@ -213,6 +221,7 @@ def del_line():
         if len(a2) == 0:
             d.grid_remove()
         i2 -= 1
+        
 def line_c():
     global graph
     global graph_dic
@@ -222,7 +231,6 @@ def line_c():
         for j in line:
             w.delete(j)
         line = []
-        
         for j in range(len(a2)):
             if a2[j].get() == '' or b2[j].get() == '':
                 break
@@ -231,6 +239,7 @@ def line_c():
             graph.append([a2[j].get(), b2[j].get()])
             graph.append([b2[j].get(), a2[j].get()])
         graph_dic = convert_list_dict(graph)
+        
 f2top = Frame(master).grid(row=0 ,column=2)
 Button(f2top, text="add_line", command=add_line).grid(row=0, column=2, sticky=W)
 Button(f2top, text="del_line", command=del_line).grid(row=0, column=2, sticky=W, padx=60)
