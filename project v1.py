@@ -19,7 +19,6 @@ i2 = 0
 node1, node2 = list(), []
 line, graph = list(), []
 graph_dic = dict()
-warning_flag = False
 
 ######################### Function area
 
