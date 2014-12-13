@@ -15,10 +15,11 @@ a, b = list(), []
 i = 0
 w_dot, w_name, w_pos = list(), [], []
 a2, b2 = list(), []
+i2 = 0
 node1, node2 = list(), []
 line, graph = list(), []
 graph_dic = dict()
-i2 = 0
+warning_flag = False
 
 ######################### Function area
 
@@ -90,7 +91,12 @@ def answer(ans):
         we.create_line(w_pos[int(z(ans[o], ino=1))-1].x, w_pos[int(z(ans[o], ino=1))-1].y,\
                         w_pos[int(z(ans[o+1], ino=1))-1].x, w_pos[int(z(ans[o+1], ino=1))-1].y)
     root.mainloop()
-    
+def updownchange():
+    botup.grid(row=i+1, column=0, sticky=E, padx=20)
+    botdown.grid(row=i+1, column=0, sticky=E, padx=40)
+    if len(a) == 0:
+        botup.grid_remove()
+        botdown.grid_remove()
 ######################### Third Frame
 def changeposmodule(event):
     if len(w_dot) != 0:
@@ -101,7 +107,8 @@ def changeposmodule(event):
 def calcu():
     global graph_dic
     temp = find_shortest_path(graph_dic, p1.get(), p2.get(), path=[])
-    answer(temp)
+    if temp != None:
+        answer(temp)
 Label(master, text='Find Shortest Path From').grid(row=0, column=3, sticky=W)
 p1 = Entry(master, width=2)
 p1.grid(row=0, column=3, sticky=W, padx=135)
@@ -167,12 +174,14 @@ def i_change_up():
         i -= 1
         a[i].config(fg='BLACK')
         a[i-1].config(fg='RED')
+        updownchange()
 def i_change_down():
     global i
     if i > -1 and i < len(a):
         a[i-1].config(fg='BLACK')
         i += 1
         a[i-1].config(fg='RED')
+        updownchange()
 ftop = Frame(master).grid(row=0)
 Label(ftop, text='Comment').grid(row=1)
 Button(ftop, text="Add Node", command=add_button).grid(row=0, sticky=W)
@@ -208,8 +217,16 @@ def del_line():
 def line_c():
     global graph
     global graph_dic
+    global line
+    global warning_flag
     if len(a) >= 2:
+        for j in line:
+            w.delete(j)
+        line = []
+        
         for j in range(len(a2)):
+            if a2[j].get() == '' or b2[j].get() == '':
+                break
             line.append(w.create_line(w_pos[int(z(a2[j].get(), ino=1))-1].x, w_pos[int(z(a2[j].get(), ino=1))-1].y,\
                                       w_pos[int(z(b2[j].get(), ino=1))-1].x, w_pos[int(z(b2[j].get(), ino=1))-1].y))
             graph.append([a2[j].get(), b2[j].get()])
